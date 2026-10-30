@@ -17,7 +17,7 @@ import {
   Lock,
   ArrowRight
 } from 'lucide-react';
-import { NGO_INFO, BOARD_MEMBERS } from '../data/initialData';
+import { NGO_INFO, BOARD_MEMBERS, INITIAL_JOB_DESCRIPTIONS } from '../data/initialData';
 import { OfficialDocument, BoardMember } from '../types';
 
 interface GovernanceSectionProps {
@@ -108,7 +108,7 @@ export const GovernanceSection: React.FC<GovernanceSectionProps> = ({
           }`}
         >
           <Users className="w-4 h-4" />
-          <span>Pyramide des Pouvoirs (CA / DE / CPI)</span>
+          <span>Organigramme (CA / DE / CPI / chargés)</span>
         </button>
 
         <button
@@ -160,7 +160,7 @@ export const GovernanceSection: React.FC<GovernanceSectionProps> = ({
                   Mme Philomène AKPODJI
                 </h3>
                 <p className="text-xs font-bold text-indigo-700 uppercase tracking-wide">
-                  Présidente du Conseil d'Administration &amp; Trésorière
+                  Présidente du Conseil d'Administration
                 </p>
                 <span className="inline-block mt-1 text-2xs px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">
                   Mandat Statutaire Électif
@@ -257,10 +257,10 @@ export const GovernanceSection: React.FC<GovernanceSectionProps> = ({
               <div className="p-4 rounded-xl border border-indigo-100 bg-indigo-50/30 space-y-2">
                 <div className="font-bold text-indigo-950 flex items-center gap-1.5 text-sm">
                   <span className="w-2.5 h-2.5 rounded-full bg-indigo-600" />
-                  <span>1. Collège Présidence &amp; Trésorerie</span>
+                  <span>1. Collège de la Présidence</span>
                 </div>
                 <p className="text-slate-600 text-2xs leading-relaxed">
-                  Piloté par <strong>Mme Philomène AKPODJI</strong>. Assure la garde des sceaux statutaires, la régularité des comptes bancaires, la supervision des audits légaux et les relations officielles avec les ministères de tutelle (MCVT, MISP).
+                  Piloté par <strong>Mme Philomène AKPODJI</strong>. Veille à la régularité des comptes, à la supervision des audits légaux et aux relations officielles avec les ministères de tutelle (MCVT, MISP).
                 </p>
                 <div className="pt-2 text-2xs font-bold text-indigo-700">
                   • 2 Sièges Délibératifs
@@ -356,25 +356,23 @@ export const GovernanceSection: React.FC<GovernanceSectionProps> = ({
         </div>
       )}
 
-      {/* 2. SUB-TAB: PYRAMIDE DES POUVOIRS (CA / DE / CPI) */}
+      {/* 2. SUB-TAB: ORGANIGRAMME (CA / DE / CPI / chargés) — d'après le document « Cahiers de charge » */}
       {activeSubTab === 'pyramide_pouvoirs' && (
         <div className="space-y-6">
           <div className="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-xs space-y-6">
             <div>
               <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2.5 py-0.5 rounded-md">
-                Architecture Tripartite de Gouvernance
+                Organigramme de l'ONG
               </span>
               <h3 className="text-xl font-bold text-slate-900 mt-1">
-                Comment s'articule le Conseil d'Administration avec la Direction Exécutive et le CPI ?
+                Comment s'articulent le Conseil d'Administration, la Direction Exécutive, le CPI et les chargés ?
               </h3>
               <p className="text-xs text-slate-500 mt-0.5">
-                La séparation stricte entre pouvoir délibérant / de contrôle (CA) et pouvoir exécutif / de gestion courante (DE/CPI) protège l'ONG contre tout conflit d'intérêts.
+                Le Conseil d'Administration gouverne, le Directeur Exécutif dirige et représente l'ONG, le CPI coordonne les programmes et consolide les rapports, et chaque chargé rend compte au Directeur Exécutif.
               </p>
             </div>
 
-            {/* Visual Hierarchy */}
             <div className="space-y-4">
-              {/* NIVEAU 1 : CONSEIL D'ADMINISTRATION */}
               <div className="p-5 rounded-2xl bg-gradient-to-r from-indigo-900 to-indigo-950 text-white border-2 border-indigo-500 shadow-md">
                 <div className="flex flex-wrap items-center justify-between gap-2 border-b border-indigo-800/80 pb-3">
                   <div className="flex items-center gap-2">
@@ -382,66 +380,64 @@ export const GovernanceSection: React.FC<GovernanceSectionProps> = ({
                       NIV 1
                     </span>
                     <div>
-                      <div className="text-xs uppercase font-bold text-indigo-300">Organe Souverain Délibérant</div>
+                      <div className="text-xs uppercase font-bold text-indigo-300">Organe de Gouvernance</div>
                       <h4 className="text-base sm:text-lg font-black text-white">
                         Conseil d'Administration (CA) — Présidé par Mme Philomène AKPODJI
                       </h4>
                     </div>
                   </div>
                   <span className="px-2.5 py-1 rounded-full bg-indigo-500/30 text-indigo-200 text-2xs font-bold border border-indigo-400/30">
-                    Pouvoir d'Orientation &amp; de Contrôle
+                    Gouvernance &amp; Contrôle
                   </span>
                 </div>
 
                 <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-indigo-100">
                   <div className="space-y-1">
-                    <strong className="text-white block text-2xs uppercase">Attributions Directes :</strong>
+                    <strong className="text-white block text-2xs uppercase">Rôle :</strong>
                     <p className="text-2xs text-indigo-200/90 leading-relaxed">
-                      Arrête les budgets annuels, contrôle la régularité des comptes de l'ONG, approuve les rapports moraux et financiers, veille au respect des Statuts et de la Loi 2025-19.
+                      Organe de gouvernance de l'ONG. Ses attributions précises sont fixées par les Statuts et le Règlement Intérieur, conformément à la Loi 2025-19.
                     </p>
                   </div>
                   <div className="space-y-1">
                     <strong className="text-white block text-2xs uppercase">Relation avec le DE :</strong>
                     <p className="text-2xs text-indigo-200/90 leading-relaxed">
-                      Nomme ou renouvelle le Directeur Exécutif (SONON Tchéhouéa), fixe ses lettres de mission et lui accorde le quitus annuel de gestion.
+                      Le Directeur Exécutif lui rend compte de la marche générale de l'ONG. La Présidente du CA signe la fiche de poste du DE.
                     </p>
                   </div>
                   <div className="space-y-1">
-                    <strong className="text-white block text-2xs uppercase">Signatures &amp; Visas :</strong>
+                    <strong className="text-white block text-2xs uppercase">Information du CA :</strong>
                     <p className="text-2xs text-indigo-200/90 leading-relaxed">
-                      Visa souverain sur les conventions de financement internationales et approbation des dépôts légaux au Ministère de l'Intérieur.
+                      Le CA reçoit copie (ampliation) des cahiers de charge de l'équipe.
                     </p>
                   </div>
                 </div>
               </div>
 
-              {/* Connector Down */}
               <div className="flex justify-center">
                 <div className="flex flex-col items-center">
                   <div className="w-0.5 h-6 bg-slate-300"></div>
                   <div className="text-2xs font-bold uppercase tracking-wider text-slate-500 bg-slate-100 px-3 py-0.5 rounded-full border border-slate-200">
-                    Mandat d'Exécution &amp; Délégation de Gestion
+                    Le DE rend compte au PCA
                   </div>
                   <div className="w-0.5 h-6 bg-slate-300"></div>
                 </div>
               </div>
 
-              {/* NIVEAU 2 : DIRECTION EXÉCUTIVE */}
-              <div className="p-5 rounded-2xl bg-blue-900 text-white border-2 border-blue-400 shadow-md">
+              <div className="p-5 rounded-2xl bg-gradient-to-r from-blue-900 to-blue-900 text-white border-2 border-blue-400 shadow-md">
                 <div className="flex flex-wrap items-center justify-between gap-2 border-b border-blue-800/80 pb-3">
                   <div className="flex items-center gap-2">
                     <span className="w-8 h-8 rounded-xl bg-blue-500/30 border border-blue-400/50 flex items-center justify-center font-black text-xs text-blue-200">
                       NIV 2
                     </span>
                     <div>
-                      <div className="text-xs uppercase font-bold text-blue-300">Organe Exécutif &amp; Légal</div>
+                      <div className="text-xs uppercase font-bold text-blue-300">Organe Exécutif</div>
                       <h4 className="text-base sm:text-lg font-black text-white">
                         Direction Exécutive (DE) — SONON Tchéhouéa
                       </h4>
                     </div>
                   </div>
                   <span className="px-2.5 py-1 rounded-full bg-blue-500/30 text-blue-200 text-2xs font-bold border border-blue-400/30">
-                    Ordonnateur &amp; Représentation Légale
+                    Direction, Arbitrage &amp; Représentation
                   </span>
                 </div>
 
@@ -449,51 +445,49 @@ export const GovernanceSection: React.FC<GovernanceSectionProps> = ({
                   <div className="space-y-1">
                     <strong className="text-white block text-2xs uppercase">Attributions :</strong>
                     <p className="text-2xs text-blue-200/90 leading-relaxed">
-                      Représente légalement l'ONG devant l'État (MCVT, Pêche), engage l'ONG dans les accords opérationnels, ordonnance les dépenses.
+                      Définit la vision stratégique, arbitre par écrit les questions de compétences, valide et signe les cahiers de charge, actes de nomination, budgets et conventions préparés par l'équipe.
                     </p>
                   </div>
                   <div className="space-y-1">
-                    <strong className="text-white block text-2xs uppercase">Redevabilité au CA :</strong>
+                    <strong className="text-white block text-2xs uppercase">Représentation :</strong>
                     <p className="text-2xs text-blue-200/90 leading-relaxed">
-                      Rend compte trimestriellement à la Présidente du CA Mme AKPODJI et soumet pour quitus les états financiers sincères.
+                      Assure la représentation officielle de l'ONG et la recherche de financement de haut niveau, en s'appuyant sur le CPI et le Chargé à la mobilisation des PTF.
                     </p>
                   </div>
                   <div className="space-y-1">
-                    <strong className="text-white block text-2xs uppercase">Délégation au CPI :</strong>
+                    <strong className="text-white block text-2xs uppercase">Supérieur hiérarchique :</strong>
                     <p className="text-2xs text-blue-200/90 leading-relaxed">
-                      Délègue par note de service officielle la coordination générale des programmes et le webmastering opérationnel au CPI.
+                      Les fiches de poste de l'équipe (finances, site web, communication, juridique, relations extérieures, PTF, programmes, presse) le désignent comme supérieur hiérarchique direct.
                     </p>
                   </div>
                 </div>
               </div>
 
-              {/* Connector Down */}
               <div className="flex justify-center">
                 <div className="flex flex-col items-center">
                   <div className="w-0.5 h-6 bg-slate-300"></div>
                   <div className="text-2xs font-bold uppercase tracking-wider text-slate-500 bg-slate-100 px-3 py-0.5 rounded-full border border-slate-200">
-                    Coordination Opérationnelle &amp; Règle J+10
+                    Coordination des programmes &amp; règle J+10
                   </div>
                   <div className="w-0.5 h-6 bg-slate-300"></div>
                 </div>
               </div>
 
-              {/* NIVEAU 3 : COORDINATION DES PROGRAMMES */}
-              <div className="p-5 rounded-2xl bg-emerald-900 text-white border-2 border-emerald-500 shadow-md">
+              <div className="p-5 rounded-2xl bg-gradient-to-r from-emerald-900 to-emerald-900 text-white border-2 border-emerald-500 shadow-md">
                 <div className="flex flex-wrap items-center justify-between gap-2 border-b border-emerald-800/80 pb-3">
                   <div className="flex items-center gap-2">
                     <span className="w-8 h-8 rounded-xl bg-emerald-500/30 border border-emerald-400/50 flex items-center justify-center font-black text-xs text-emerald-200">
                       NIV 3
                     </span>
                     <div>
-                      <div className="text-xs uppercase font-bold text-emerald-300">Coordination Opérationnelle &amp; Suivi Scientifique</div>
+                      <div className="text-xs uppercase font-bold text-emerald-300">Coordination des Programmes — Deuxième niveau par la fonction</div>
                       <h4 className="text-base sm:text-lg font-black text-white">
                         Chargé de Programmes par Intérim (CPI) — Henri Doudédji FATCHINA
                       </h4>
                     </div>
                   </div>
                   <span className="px-2.5 py-1 rounded-full bg-emerald-500/30 text-emerald-200 text-2xs font-bold border border-emerald-400/30">
-                    Terrain • Rapportage J+10 • Webmestre
+                    Coordination • Rapportage J+10
                   </span>
                 </div>
 
@@ -501,21 +495,58 @@ export const GovernanceSection: React.FC<GovernanceSectionProps> = ({
                   <div className="space-y-1">
                     <strong className="text-white block text-2xs uppercase">Attributions :</strong>
                     <p className="text-2xs text-emerald-200/90 leading-relaxed">
-                      Supervision des patrouilles de nuit avec la Police Républicaine (BPLP), gestion de l'écloserie de Togbin, baguage série BJ, consolidation des rapports J+10.
+                      Gère les programmes et projets, assure la planification et le suivi-évaluation, élabore le contenu technique des projets destinés aux partenaires, coordonne animateurs, points focaux et collaborateurs.
                     </p>
                   </div>
                   <div className="space-y-1">
-                    <strong className="text-white block text-2xs uppercase">Webmastering &amp; IA :</strong>
+                    <strong className="text-white block text-2xs uppercase">Rapports :</strong>
                     <p className="text-2xs text-emerald-200/90 leading-relaxed">
-                      Mise à jour de la médiathèque officielle, classement documentaire des arrêtés ministériels et protocoles scientifiques.
+                      Consolide les contributions des chargés et des points focaux : rapport mensuel au plus tard 10 jours après le mois échu, rapport annuel au plus tard le 1er février. Il les soumet au DE pour validation.
                     </p>
                   </div>
                   <div className="space-y-1">
-                    <strong className="text-white block text-2xs uppercase">Équipes de Terrain :</strong>
+                    <strong className="text-white block text-2xs uppercase">Intérim du DE :</strong>
                     <p className="text-2xs text-emerald-200/90 leading-relaxed">
-                      Encadrement de 28 éco-gardes et patrouilleurs bénévoles sur les 35 km du cordon littoral béninois.
+                      Assure l'intérim du DE pour les actes de gestion courante. Les engagements financiers ou juridiques majeurs restent soumis à une délégation expresse du DE.
                     </p>
                   </div>
+                </div>
+              </div>
+
+              <div className="flex justify-center">
+                <div className="flex flex-col items-center">
+                  <div className="w-0.5 h-6 bg-slate-300"></div>
+                  <div className="text-2xs font-bold uppercase tracking-wider text-slate-500 bg-slate-100 px-3 py-0.5 rounded-full border border-slate-200">
+                    Chargés rattachés au DE
+                  </div>
+                  <div className="w-0.5 h-6 bg-slate-300"></div>
+                </div>
+              </div>
+
+              {/* Chargés rattachés directement au DE (d'après les fiches de poste) */}
+              <div className="p-5 rounded-2xl bg-slate-50 border-2 border-slate-300 shadow-xs">
+                <div className="border-b border-slate-200 pb-3">
+                  <div className="text-xs uppercase font-bold text-slate-500">Équipe rattachée au Directeur Exécutif</div>
+                  <h4 className="text-base sm:text-lg font-black text-slate-900">Chargés et collaborateurs</h4>
+                  <p className="text-2xs text-slate-500 mt-0.5">
+                    Chaque chargé rend compte au DE. Les chargés « Santé des Tortues » et « Mangroves » travaillent en coordination opérationnelle avec le CPI, à qui ils remettent leur rapport mensuel sous 5 jours.
+                  </p>
+                </div>
+                <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {INITIAL_JOB_DESCRIPTIONS.filter((j) => !['post-pca', 'post-de', 'post-cpi'].includes(j.id)).map((j) => (
+                    <div key={j.id} className="p-3 rounded-xl bg-white border border-slate-200 space-y-1">
+                      <div className="text-xs font-bold text-slate-900 leading-snug">{j.title}</div>
+                      <div className="text-2xs text-slate-600">
+                        {j.incumbentName === 'À désigner' ? <em>Poste à pourvoir</em> : j.incumbentName}
+                      </div>
+                      {j.reportsTo.includes('coordination opérationnelle') && (
+                        <div className="text-2xs font-semibold text-emerald-700">Coordination opérationnelle avec le CPI</div>
+                      )}
+                      {j.reportsTo.includes('Chargé à la Communication') && (
+                        <div className="text-2xs font-semibold text-indigo-700">En lien avec le Chargé à la Communication</div>
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>

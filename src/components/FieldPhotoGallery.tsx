@@ -96,13 +96,6 @@ export const FieldPhotoGallery: React.FC<FieldPhotoGalleryProps> = ({
             </button>
           </>
         )}
-
-        {/* Example overlay banner if example */}
-        {isExample && (
-          <div className="absolute top-3 left-3 bg-amber-500/90 text-slate-950 font-bold text-2xs px-2.5 py-1 rounded-lg shadow-md">
-            Illustration de terrain • Remplaçable
-          </div>
-        )}
       </div>
 
       {/* Thumbnails row if multiple photos */}

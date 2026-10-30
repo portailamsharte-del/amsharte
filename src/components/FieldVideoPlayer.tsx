@@ -10,8 +10,7 @@ import {
   Clock, 
   Share2, 
   Sparkles,
-  MapPin,
-  ExternalLink
+  MapPin
 } from 'lucide-react';
 
 interface FieldVideoPlayerProps {
@@ -64,11 +63,6 @@ export const FieldVideoPlayer: React.FC<FieldVideoPlayerProps> = ({
           <span className="text-xs font-bold text-cyan-300 uppercase tracking-wider">
             Vidéo de Terrain • Suivi Écologique
           </span>
-          {isExample && (
-            <span className="text-[10px] bg-amber-400/20 text-amber-300 px-2 py-0.5 rounded-full border border-amber-400/30 font-semibold">
-              Exemple vidéo à remplacer
-            </span>
-          )}
         </div>
 
         {onReplace && (
@@ -129,8 +123,8 @@ export const FieldVideoPlayer: React.FC<FieldVideoPlayerProps> = ({
               {/* Rec Indicator / Night Vision Badge */}
               <div className="flex items-center justify-between">
                 <div className="inline-flex items-center gap-2 bg-slate-950/80 px-2.5 py-1 rounded-md border border-slate-700 text-2xs font-mono text-emerald-400">
-                  <span className={`w-2 h-2 rounded-full ${isPlaying ? 'bg-red-500 animate-pulse' : 'bg-slate-400'}`}></span>
-                  <span>{isPlaying ? 'PLAY • 1080p HD' : 'PAUSE • TOGBIN CAM'}</span>
+                  <span className={`w-2 h-2 rounded-full ${isPlaying ? 'bg-emerald-400' : 'bg-slate-400'}`}></span>
+                  <span>{isPlaying ? 'LECTURE' : 'PAUSE'}</span>
                 </div>
 
                 <div className="bg-slate-950/80 px-2.5 py-1 rounded-md border border-slate-700 text-2xs text-slate-300 flex items-center gap-1 font-mono">
@@ -212,18 +206,6 @@ export const FieldVideoPlayer: React.FC<FieldVideoPlayerProps> = ({
           className="text-slate-400 hover:text-white transition cursor-pointer"
         >
           {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-        </button>
-      </div>
-
-      {/* Replace instructions tooltip */}
-      <div className="bg-slate-950 px-4 py-2 text-[11px] text-amber-200/90 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-2">
-        <span>💡 Vous disposez d'un enregistrement WhatsApp ou d'un fichier MP4 de terrain ?</span>
-        <button 
-          onClick={onReplace}
-          className="text-amber-400 font-bold hover:underline cursor-pointer flex items-center gap-1"
-        >
-          <span>Cliquer ici pour injecter votre propre vidéo</span>
-          <ExternalLink className="w-3 h-3" />
         </button>
       </div>
     </div>

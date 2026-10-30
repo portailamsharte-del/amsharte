@@ -5,8 +5,10 @@ import { VitePWA } from 'vite-plugin-pwa';
 import path from 'path';
 import { defineConfig } from 'vite';
 
-// Correction cruciale : Utilisation du nom exact du dépôt avec la majuscule
-const BASE = process.env.GITHUB_PAGES === 'true' ? '/Amsharte/' : '/';
+// Sur GitHub Pages, le chemin doit correspondre EXACTEMENT au nom du dépôt cible
+// (ex. /Amsharte/ pour houesseia/Amsharte). Réglable par variable d'environnement
+// pour ne jamais se tromper de compte/dépôt et éviter un site blanc.
+const BASE = process.env.GITHUB_PAGES === 'true' ? (process.env.BASE_PATH || '/Amsharte/') : '/';
 
 export default defineConfig(() => {
   return {
@@ -112,7 +114,10 @@ export default defineConfig(() => {
       setupFiles: ['./src/tests/setup.ts'],
     },
     server: {
+      // HMR is disabled in AI Studio via DISABLE_HMR env var.
+      // Do not modifyâfile watching is disabled to prevent flickering during agent edits.
       hmr: process.env.DISABLE_HMR !== 'true',
+      // Disable file watching when DISABLE_HMR is true to save CPU during agent edits.
       watch: process.env.DISABLE_HMR === 'true' ? null : {},
     },
   };

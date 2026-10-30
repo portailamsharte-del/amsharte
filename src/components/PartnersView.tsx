@@ -196,7 +196,7 @@ export const PartnersView: React.FC<PartnersViewProps> = ({ partners }) => {
                   <span>Date limite impérative : {selectedPartner.nextDeliverableDate}</span>
                 </div>
                 <p className="text-[11px] text-slate-600">
-                  Rappel : Le contenu technique est rédigé par le CPI (Henri D. FATCHINA) et l'état financier est préparé par le RAF (Brice HOUNGBO).
+                  Rappel : Le contenu technique est rédigé par le CPI (Henri D. FATCHINA) et l'état financier est préparé par la Chargée des Affaires Financières (Daria SONON).
                 </p>
               </div>
 

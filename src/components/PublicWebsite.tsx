@@ -53,6 +53,8 @@ interface PublicWebsiteProps {
   impactMetrics?: ImpactMetricsState;
   officialDocuments?: OfficialDocument[];
   onGoToWebmastering?: () => void;
+  estConnecte?: boolean;
+  effectifMembres?: number;
 }
 
 export const PublicWebsite: React.FC<PublicWebsiteProps> = ({ 
@@ -67,7 +69,9 @@ export const PublicWebsite: React.FC<PublicWebsiteProps> = ({
   onExtractThreadToReport,
   impactMetrics,
   officialDocuments,
-  onGoToWebmastering
+  onGoToWebmastering,
+  estConnecte = false,
+  effectifMembres = 0
 }) => {
   const [activeTab, setActiveTab] = useState<
     | 'fil_actualite'
@@ -217,7 +221,7 @@ export const PublicWebsite: React.FC<PublicWebsiteProps> = ({
               <button
                 onClick={() => onGoToIntranet('espace-travail')}
                 className="flex items-center gap-1.5 bg-slate-900 hover:bg-slate-800 text-emerald-300 border border-emerald-600/40 px-3.5 py-2 rounded-xl text-xs font-bold shadow-md transition cursor-pointer whitespace-nowrap shrink-0"
-                title="Direction Exécutive AMSHARTE — Espace de Travail des 33 membres et Cockpit"
+                title="Direction Exécutive AMSHARTE — Espace de Travail des membres et Cockpit"
               >
                 <ShieldCheck className="w-4 h-4 text-emerald-400" />
                 <span>DE Amsharte</span>
@@ -236,7 +240,7 @@ export const PublicWebsite: React.FC<PublicWebsiteProps> = ({
               <div className="text-xs text-slate-300 mt-0.5 font-medium">Tortues relâchées en mer</div>
             </div>
             <div className="bg-slate-800/80 backdrop-blur-xs border border-slate-700/80 rounded-xl p-3">
-              <div className="text-2xl sm:text-3xl font-black text-teal-400">33 Membres</div>
+              <div className="text-2xl sm:text-3xl font-black text-teal-400">{effectifMembres} Membres</div>
               <div className="text-xs text-slate-300 mt-0.5 font-medium">Équipe &amp; Bénévoles dévoués</div>
             </div>
             <div className="bg-slate-800/80 backdrop-blur-xs border border-slate-700/80 rounded-xl p-3">
@@ -257,6 +261,7 @@ export const PublicWebsite: React.FC<PublicWebsiteProps> = ({
             onUpdateAction={onUpdateAction}
             onExtractToReport={onExtractActionToReport}
             onGoToForum={() => setActiveTab('tortues_parties_prenantes')}
+            estConnecte={estConnecte}
           />
         )}
 

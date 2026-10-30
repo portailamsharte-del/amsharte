@@ -79,6 +79,7 @@ interface EspaceTravailHubProps {
   onUpdateMembers: (members: ExecutiveMember[]) => void;
   activeMember: ExecutiveMember | null;
   onSetActiveMember: (member: ExecutiveMember | null) => void;
+  peutSuperviser?: boolean; // vrai pour le CPI et l'administrateur : consulter l'espace d'un autre membre
   logisticalNeeds: LogisticalNeedItem[];
   onAddLogisticalNeed: (item: LogisticalNeedItem) => void;
   onUpdateLogisticalNeed: (item: LogisticalNeedItem) => void;
@@ -110,6 +111,7 @@ export const EspaceTravailHub: React.FC<EspaceTravailHubProps> = ({
   onUpdateMembers,
   activeMember,
   onSetActiveMember,
+  peutSuperviser = false,
   logisticalNeeds,
   onAddLogisticalNeed,
   onUpdateLogisticalNeed,
@@ -150,7 +152,7 @@ export const EspaceTravailHub: React.FC<EspaceTravailHubProps> = ({
 
   // Webmastering Access & Delegation State (CPI & DE exclusive, with delegation to Chargé de communication)
   const [isDelegationActive, setIsDelegationActive] = useState<boolean>(true);
-  const [delegatedMemberId, setDelegatedMemberId] = useState<string>('exec-07'); // DOSSOU-YOVO Mahugnon (Chargé de communication)
+  const [delegatedMemberId, setDelegatedMemberId] = useState<string>('exec-06'); // M. Landry (Chargé du Site Web)
 
   // Verify access privileges for Webmastering
   const isCpiOrDe = useMemo(() => {
@@ -158,6 +160,7 @@ export const EspaceTravailHub: React.FC<EspaceTravailHubProps> = ({
     return (
       activeMember.id === 'exec-01' || 
       activeMember.id === 'exec-02' || 
+      ['cpi', 'de', 'administrateur'].includes(activeMember.roleCle || '') || 
       activeMember.role.toLowerCase().includes('directeur exécutif') || 
       activeMember.role.toLowerCase().includes('chargé de programmes')
     );
@@ -165,7 +168,7 @@ export const EspaceTravailHub: React.FC<EspaceTravailHubProps> = ({
 
   const isDelegatedUser = useMemo(() => {
     if (!activeMember) return false;
-    return isDelegationActive && (activeMember.id === delegatedMemberId || activeMember.role.toLowerCase().includes('communication'));
+    return isDelegationActive && (activeMember.id === delegatedMemberId || ['site_web', 'communication'].includes(activeMember.roleCle || '') || activeMember.role.toLowerCase().includes('communication'));
   }, [activeMember, isDelegationActive, delegatedMemberId]);
 
   const hasWebmasterAccess = isCpiOrDe || isDelegatedUser;
@@ -219,11 +222,11 @@ Le modèle optimal et pérenne pour l'ONG AMSHARTE repose sur le TRIPTYQUE HYBRI
      * Module Projets : Suivi budgétaire du Projet Tortues (P1) et du Projet Mangroves (P2).
      * Module Tiers & Bailleurs : Historique des relations avec les PTF (Fonds pour l'Environnement Mondial, PNUD, UICN, Ministère du Cadre de Vie).
      * Module Comptabilité/Banque : Rapprochement bancaire, journal des dépenses terrain, suivi des caisses d'avances.
-     * Module Adhérents/Bénévoles : Suivi des 33 membres et éco-gardes volontaires.
+     * Module Adhérents/Bénévoles : Suivi des membres et éco-gardes volontaires.
 
 3. PORTAIL NUMÉRIQUE UNIFIÉ AMSHARTE (L'application actuelle)
    - Rôle : Cockpit temps réel, synchronisation publique certifiée, médiathèque officielle et annuaire dynamique.
-   - Accès Webmaster : Exclusif au CPI et au DE, avec délégation opérationnelle au Chargé de communication (DOSSOU-YOVO Mahugnon).
+   - Accès Webmaster : Exclusif au CPI et au DE, avec délégation opérationnelle au Chargé du Site Web et au Chargé à la Communication, sous la supervision du CPI et du DE.
    - Remplacement de l'ancien Google Sites : Cet intranet/portail unifié assure une sécurité maximale et une centralisation totale des flux sans doublons.
 
 ========================================================================================
@@ -284,7 +287,7 @@ SONON Tchéhouéa, Directeur Exécutif (DE)
   const [syncSuccessMessage, setSyncSuccessMessage] = useState('');
 
   // Calculate aggregated performance and stats
-  const totalMembersCount = 33; // Full NGO membership
+  const totalMembersCount = members.length; // Effectif réel de la liste des membres
   const registeredDirectoryCount = members.length;
   const avgPerformance = useMemo(() => {
     if (members.length === 0) return 0;
@@ -307,7 +310,7 @@ SONON Tchéhouéa, Directeur Exécutif (DE)
       
       let matchDept = true;
       if (selectedDepartment === 'direction') {
-        matchDept = ['exec-01', 'exec-02', 'exec-03', 'exec-04'].includes(m.id) || 
+        matchDept = ['exec-01', 'exec-02', 'exec-03'].includes(m.id) || 
                     m.department.toLowerCase().includes('direction') || 
                     m.department.toLowerCase().includes('financière');
       } else if (selectedDepartment === 'terrain') {
@@ -627,7 +630,6 @@ SONON Tchéhouéa, Directeur Exécutif (DE)
         authorName: socialSourceType === 'facebook' ? 'Page Facebook AMSHARTE (Import IA)' : 'Sentinelle WhatsApp Communauté',
         authorRole: 'Cellule Médias & Modération IA',
         content: `Publication extraite et vérifiée depuis le canal officiel ${socialSourceType.toUpperCase()} :\n\n"${text.trim()}"\n\nTraitée et mise en conformité selon la charte éditoriale AMSHARTE.`,
-        verifiedBy: 'Modéré par IA & Validé par Cellule Communication',
         species: text.toLowerCase().includes('luth') ? 'Tortue Luth (Dermochelys coriacea)' : 'Tortue Olivâtre (Lepidochelys olivacea)',
         measurements: {
           eggsCount: eggMatch ? parseInt(eggMatch[1]) : undefined,
@@ -703,7 +705,7 @@ SONON Tchéhouéa, Directeur Exécutif (DE)
                 Espace de Travail &amp; Cockpit Opérationnel AMSHARTE
               </span>
               <span className="bg-teal-500/20 text-teal-200 text-xs px-2.5 py-0.5 rounded-full">
-                33 Membres Actifs
+                {members.length} Membres
               </span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
@@ -749,7 +751,7 @@ SONON Tchéhouéa, Directeur Exécutif (DE)
               <div className="flex items-center justify-between gap-2">
                 <span className="text-2xs text-emerald-300 font-bold uppercase tracking-wider flex items-center gap-1">
                   <Users className="w-3.5 h-3.5 text-emerald-400" />
-                  Espace Actif (33 Membres) :
+                  Espace Actif ({members.length} Membres) :
                 </span>
                 {activeMember && (
                   <button
@@ -772,6 +774,7 @@ SONON Tchéhouéa, Directeur Exécutif (DE)
                   referrerPolicy="no-referrer"
                 />
                 <div className="flex-1 min-w-0">
+                  {peutSuperviser ? (
                   <select
                     value={activeMember ? activeMember.id : ''}
                     onChange={(e) => {
@@ -779,15 +782,20 @@ SONON Tchéhouéa, Directeur Exécutif (DE)
                       if (target) handleQuickSwitchMember(target);
                     }}
                     className="w-full bg-slate-900 border border-emerald-500/60 rounded-lg text-white text-xs font-semibold px-2 py-1.5 focus:ring-2 focus:ring-emerald-400 cursor-pointer"
-                    title="Basculer instantanément sur l'espace de n'importe lequel des 33 membres"
+                    title={`Basculer instantanément sur l'espace de n'importe lequel des ${members.length} membres`}
                   >
-                    <option value="" disabled>Sélectionner un membre (33)</option>
+                    <option value="" disabled>Sélectionner un membre ({members.length})</option>
                     {members.map((m, idx) => (
                       <option key={m.id} value={m.id}>
                         N°{idx + 1} • {m.name} ({m.role.substring(0, 26)}...)
                       </option>
                     ))}
                   </select>
+                  ) : (
+                    <div className="w-full text-white text-xs font-semibold px-2 py-1.5 truncate">
+                      {activeMember ? activeMember.name : ''}
+                    </div>
+                  )}
                   <div className="text-2xs text-emerald-300 font-medium truncate mt-0.5">
                     {activeMember ? `${activeMember.role}` : 'Sélectionnez un profil'}
                   </div>
@@ -864,7 +872,7 @@ SONON Tchéhouéa, Directeur Exécutif (DE)
             }`}
           >
             <Users className="w-4 h-4 text-emerald-400" />
-            <span>Annuaire (33 Membres)</span>
+            <span>Annuaire ({members.length} Membres)</span>
           </button>
 
           <button
@@ -1963,62 +1971,13 @@ SONON Tchéhouéa, Directeur Exécutif (DE)
                   Cet espace de travail est <strong>exclusivement réservé au Chargé de Programmes par Intérim (CPI Henri D. FATCHINA)</strong> et au <strong>Directeur Exécutif (SONON Tchéhouéa)</strong>.
                 </p>
                 <p className="text-2xs text-slate-500">
-                  Toutefois, une délégation opérationnelle peut être accordée au <strong>Chargé de Communication (DOSSOU-YOVO Mahugnon)</strong> pour effectuer les mises à jour, publier des actes dans la médiathèque et gérer le site.
+                  Toutefois, une délégation opérationnelle peut être accordée au <strong>Chargé du Site Web (M. Landry)</strong> et au <strong>Chargé à la Communication (M. Christian SESSOU)</strong>, sous la supervision du CPI et du DE, pour publier les contenus validés.
                 </p>
               </div>
 
-              <div className="pt-4 border-t border-slate-100 space-y-3">
-                <span className="text-2xs font-bold text-slate-400 uppercase tracking-wider block">
-                  Sélectionnez un profil autorisé pour continuer
-                </span>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <button
-                    onClick={() => {
-                      const cpi = members.find(m => m.id === 'exec-02') || null;
-                      if (cpi) onSetActiveMember(cpi);
-                    }}
-                    className="p-3 rounded-xl bg-teal-50 hover:bg-teal-100 border border-teal-200 text-left transition cursor-pointer flex items-center gap-3"
-                  >
-                    <div className="w-8 h-8 rounded-lg bg-teal-600 text-white font-bold flex items-center justify-center text-xs">
-                      CPI
-                    </div>
-                    <div className="text-xs">
-                      <strong className="block text-slate-900 font-bold">Henri D. FATCHINA</strong>
-                      <span className="text-2xs text-teal-700">Chargé de Programmes</span>
-                    </div>
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      const de = members.find(m => m.id === 'exec-01') || null;
-                      if (de) onSetActiveMember(de);
-                    }}
-                    className="p-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-left transition cursor-pointer flex items-center gap-3"
-                  >
-                    <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white font-bold flex items-center justify-center text-xs">
-                      DE
-                    </div>
-                    <div className="text-xs">
-                      <strong className="block text-slate-900 font-bold">SONON Tchéhouéa</strong>
-                      <span className="text-2xs text-emerald-700">Directeur Exécutif</span>
-                    </div>
-                  </button>
-                </div>
-
-                <div className="pt-2">
-                  <button
-                    onClick={() => {
-                      setIsDelegationActive(true);
-                      const com = members.find(m => m.id === 'exec-07') || null;
-                      if (com) onSetActiveMember(com);
-                    }}
-                    className="w-full py-2.5 px-4 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-xl text-xs font-bold text-indigo-800 transition flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    <UserCheck className="w-4 h-4 text-indigo-600" />
-                    <span>Accéder via Délégation au Chargé de Communication (DOSSOU-YOVO Mahugnon)</span>
-                  </button>
-                </div>
-              </div>
+              <p className="text-2xs text-slate-500 pt-4 border-t border-slate-100">
+                Pour obtenir une délégation, adressez-vous au CPI ou au Directeur Exécutif.
+              </p>
             </div>
           ) : (
             <div className="space-y-6">

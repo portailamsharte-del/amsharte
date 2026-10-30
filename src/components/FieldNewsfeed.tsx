@@ -44,6 +44,7 @@ interface FieldNewsfeedProps {
   onExtractToReport: (action: FieldActionPost) => void;
   onGoToForum?: () => void;
   onLogAudit?: (authorName: string, authorRole: string, actionType: any, details: string) => void;
+  estConnecte?: boolean; // vrai seulement pour un membre connecté (Supabase) : donne accès aux outils internes
 }
 
 export const FieldNewsfeed: React.FC<FieldNewsfeedProps> = ({
@@ -52,7 +53,8 @@ export const FieldNewsfeed: React.FC<FieldNewsfeedProps> = ({
   onUpdateAction,
   onExtractToReport,
   onGoToForum,
-  onLogAudit
+  onLogAudit,
+  estConnecte = false
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -86,7 +88,7 @@ export const FieldNewsfeed: React.FC<FieldNewsfeedProps> = ({
   const [newHasVideo, setNewHasVideo] = useState(false);
   const [newVideoCaption, setNewVideoCaption] = useState('');
   const [newVideoUrl, setNewVideoUrl] = useState('');
-  const [newVerifiedBy, setNewVerifiedBy] = useState('Police BPLP & CPI (Henri D. FATCHINA)');
+  const [newVerifiedBy, setNewVerifiedBy] = useState('');
   const [newUploadedMediaPreview, setNewUploadedMediaPreview] = useState<string | null>(null);
   const [newUploadedMediaType, setNewUploadedMediaType] = useState<'video' | 'image' | null>(null);
   const [newUploadedFileName, setNewUploadedFileName] = useState<string>('');
@@ -217,7 +219,8 @@ export const FieldNewsfeed: React.FC<FieldNewsfeedProps> = ({
       videoUrl: newVideoUrl || (newUploadedMediaType === 'video' ? newUploadedMediaPreview || undefined : undefined),
       videoCaption: newVideoCaption || (newUploadedFileName ? `Vidéo importée : ${newUploadedFileName}` : undefined),
       imageUrls: newUploadedMediaType === 'image' && newUploadedMediaPreview ? [newUploadedMediaPreview] : undefined,
-      verifiedBy: newVerifiedBy.trim() || 'Vérifié par la Coordination AMSHARTE',
+      verifiedBy: newVerifiedBy.trim() || undefined,
+      visaValidatedAt: newVerifiedBy.trim() ? new Date().toISOString().split('T')[0] : undefined,
       likes: 1,
       stakeholderCommentsCount: 0,
       extractedIntoReport: false
@@ -295,26 +298,28 @@ export const FieldNewsfeed: React.FC<FieldNewsfeedProps> = ({
       <div className="bg-linear-to-r from-emerald-900 via-teal-900 to-slate-900 text-white rounded-2xl p-6 sm:p-8 shadow-lg border border-emerald-700/40 relative overflow-hidden">
         <div className="relative z-10 max-w-3xl">
           <div className="inline-flex items-center gap-2 bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-3 py-1 rounded-full text-xs font-semibold mb-3">
-            <Compass className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
-            <span>Surveillance Littorale en Direct • Plage de Togbin Fandji (6°21'04.9"N)</span>
+            <Compass className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Actions de terrain • Plage de Togbin Fandji (6°21'04.9"N)</span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight mb-2">
             Fil d'Actualité des Actions de Terrain
           </h2>
           <p className="text-slate-300 text-sm sm:text-base leading-relaxed mb-5">
-            Suivi temps réel des patrouilles nocturnes, baguage des tortues marines (<span className="text-emerald-300 font-semibold font-mono">BJ 2872, BJ 2871</span>), 
+            Suivi des patrouilles nocturnes, baguage des tortues marines (<span className="text-emerald-300 font-semibold font-mono">BJ 2872, BJ 2871</span>), 
             opérations conjointes avec la Brigade de Protection du Littoral et des Plages (<span className="text-blue-300 font-semibold">Police BPLP</span>), 
             transferts en écloserie et lâchers avec les populations locales.
           </p>
 
           <div className="flex flex-wrap items-center gap-3">
+            {estConnecte && (
             <button
               onClick={() => setShowAddModal(true)}
               className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold px-4 py-2.5 rounded-xl text-sm transition shadow-md cursor-pointer"
             >
               <PlusCircle className="w-4 h-4" />
-              <span>Publier une action de terrain (Acteur Admis)</span>
+              <span>Publier une action de terrain</span>
             </button>
+            )}
             {onGoToForum && (
               <button
                 onClick={onGoToForum}
@@ -565,7 +570,7 @@ export const FieldNewsfeed: React.FC<FieldNewsfeedProps> = ({
                 {action.isAnimated ? (
                   <FieldCorridorAnimation 
                     isExample={action.isExampleMedia ?? true}
-                    onReplace={() => handleOpenReplaceModal(action)}
+                    onReplace={estConnecte ? () => handleOpenReplaceModal(action) : undefined}
                   />
                 ) : (
                   <div className="space-y-4">
@@ -578,7 +583,7 @@ export const FieldNewsfeed: React.FC<FieldNewsfeedProps> = ({
                         duration={action.videoDuration || "02:14"}
                         videoUrl={action.videoUrl}
                         isExample={action.isExampleMedia ?? true}
-                        onReplace={() => handleOpenReplaceModal(action)}
+                        onReplace={estConnecte ? () => handleOpenReplaceModal(action) : undefined}
                       />
                     )}
 
@@ -599,7 +604,7 @@ export const FieldNewsfeed: React.FC<FieldNewsfeedProps> = ({
                           title={action.title}
                           location={action.location}
                           isExample={action.isExampleMedia ?? false}
-                          onReplace={() => handleOpenReplaceModal(action)}
+                          onReplace={estConnecte ? () => handleOpenReplaceModal(action) : undefined}
                         />
                       </div>
                     )}
@@ -608,10 +613,14 @@ export const FieldNewsfeed: React.FC<FieldNewsfeedProps> = ({
 
                 {/* Verification & Extraction Footer */}
                 <div className="p-4 sm:p-5 bg-white flex flex-wrap items-center justify-between gap-3 text-xs">
-                  <div className="flex items-center gap-2 text-slate-500">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                    <span>Visa de conformité : <strong className="text-slate-700">{action.verifiedBy}</strong></span>
-                  </div>
+                  {action.verifiedBy && action.visaValidatedAt ? (
+                    <div className="flex items-center gap-2 text-slate-500">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                      <span>Visa de conformité : <strong className="text-slate-700">{action.verifiedBy}</strong></span>
+                    </div>
+                  ) : (
+                    <div />
+                  )}
 
                   <div className="flex items-center gap-2">
                     {/* Like button */}
@@ -627,7 +636,8 @@ export const FieldNewsfeed: React.FC<FieldNewsfeedProps> = ({
                       <span>{action.likes + (isLiked ? 1 : 0)}</span>
                     </button>
 
-                    {/* Report Extraction Button (requested specifically by user) */}
+                    {/* Bouton d'extraction vers le rapport mensuel : réservé aux membres connectés */}
+                    {estConnecte && (
                     <button
                       onClick={() => handleExtract(action)}
                       disabled={isExtracted}
@@ -641,6 +651,7 @@ export const FieldNewsfeed: React.FC<FieldNewsfeedProps> = ({
                       <FileText className="w-3.5 h-3.5" />
                       <span>{isExtracted ? '✓ Intégré au Rapport CPI' : '📋 Puiser pour le Rapport Mensuel'}</span>
                     </button>
+                    )}
                   </div>
                 </div>
               </article>
@@ -650,7 +661,7 @@ export const FieldNewsfeed: React.FC<FieldNewsfeedProps> = ({
       </div>
 
       {/* Modal: New Action Posting (Authorized Actors) */}
-      {showAddModal && (
+      {estConnecte && showAddModal && (
         <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 z-50 animate-fade-in">
           <div className="bg-white rounded-2xl max-w-2xl w-full shadow-2xl border border-slate-200 max-h-[92vh] flex flex-col overflow-hidden">
             <div className="flex items-center justify-between border-b border-slate-100 p-4 sm:p-5 shrink-0 bg-slate-50">
@@ -728,7 +739,7 @@ export const FieldNewsfeed: React.FC<FieldNewsfeedProps> = ({
                     required
                     value={newAuthorName}
                     onChange={(e) => setNewAuthorName(e.target.value)}
-                    placeholder="Ex : Nestor K. SOSSOU / Éco-garde"
+                    placeholder="Ex : Prénom NOM / Éco-garde"
                     className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500"
                   />
                 </div>
@@ -914,12 +925,12 @@ export const FieldNewsfeed: React.FC<FieldNewsfeedProps> = ({
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Visa officiel de conformité</label>
+                <label className="block font-semibold text-slate-700 mb-1">Visa officiel de conformité <span className="font-normal text-slate-500">(à remplir seulement si la validation a réellement eu lieu ; sinon laisser vide)</span></label>
                 <input
                   type="text"
                   value={newVerifiedBy}
                   onChange={(e) => setNewVerifiedBy(e.target.value)}
-                  placeholder="Ex : Police BPLP, DE SONON Tchéhouéa, CPI Henri D. FATCHINA"
+                  placeholder="Nom de la personne ou de l'institution qui a réellement validé"
                   className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-emerald-500"
                 />
               </div>

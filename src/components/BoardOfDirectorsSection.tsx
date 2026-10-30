@@ -157,7 +157,7 @@ export const BoardOfDirectorsSection: React.FC<BoardOfDirectorsSectionProps> = (
             <div className="p-3 bg-white/5 backdrop-blur-xs rounded-xl border border-white/10">
               <div className="text-indigo-300 font-bold text-2xs uppercase">Présidence du CA</div>
               <div className="text-white font-black text-sm mt-0.5 truncate">{president.name}</div>
-              <div className="text-slate-400 text-2xs">Trésorière &amp; Garde des Sceaux</div>
+              <div className="text-slate-400 text-2xs">Présidente du Conseil d'Administration</div>
             </div>
 
             <div className="p-3 bg-white/5 backdrop-blur-xs rounded-xl border border-white/10">
@@ -308,7 +308,7 @@ export const BoardOfDirectorsSection: React.FC<BoardOfDirectorsSectionProps> = (
                   : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
               }`}
             >
-              1. Présidence &amp; Trésorerie (2)
+              1. Présidence (2)
             </button>
 
             <button

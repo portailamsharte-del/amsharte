@@ -93,7 +93,7 @@ ${formatNode(DRIVE_HIERARCHY)}
 Instructions de Déploiement :
 1. Créez le dossier racine "AMSHARTE_OFFICIEL_WORKSPACE" sur Google Drive.
 2. Définissez les droits d'accès stricts pour le DE (SONON Tchéhouéa) et le CPI (Henri D. FATCHINA).
-3. Partagez chaque sous-dossier avec le chargé correspondant (ex: 04_PROJET_TORTUES avec Nestor SOSSOU).
+3. Partagez chaque sous-dossier avec le chargé correspondant (ex: 04_PROJET_TORTUES avec le Chargé du Programme Santé des Tortues).
 ======================================================================`;
 
     downloadFile(content, `AMSHARTE_Structure_Google_Drive_Officielle.txt`);
@@ -509,7 +509,7 @@ Instructions de Déploiement :
                   Tenue de caisse, rapprochement des comptes bancaires de l'ONG et justification des forfaits de déplacement.
                 </p>
                 <div className="text-[11px] text-purple-800 font-medium pt-2">
-                  Géré par le RAF Brice HOUNGBO sous ordonnancement du DE.
+                  Géré par la Chargée des Affaires Financières (Daria SONON) sous ordonnancement du DE.
                 </div>
               </div>
             </div>

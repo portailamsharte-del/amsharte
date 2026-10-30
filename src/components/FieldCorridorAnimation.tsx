@@ -62,11 +62,6 @@ export const FieldCorridorAnimation: React.FC<FieldCorridorAnimationProps> = ({
             <Waves className="w-3.5 h-3.5 text-cyan-400" />
             Animation Pédagogique Interactive • Littoral de Togbin
           </span>
-          {isExample && (
-            <span className="text-[10px] bg-amber-400/20 text-amber-300 px-2 py-0.5 rounded-full border border-amber-400/30 font-semibold">
-              Exemple à remplacer
-            </span>
-          )}
         </div>
 
         {onReplace && (

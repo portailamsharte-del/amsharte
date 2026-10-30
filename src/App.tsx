@@ -17,6 +17,7 @@ import { SiteSettingsAndAuditView } from './components/SiteSettingsAndAuditView'
 import { SiteTrainingManualModal } from './components/SiteTrainingManualModal';
 import { WorkspaceAuthModal } from './components/WorkspaceAuthModal';
 import { supabase, chargerMaFiche, membreVersProfil } from './lib/supabase';
+import { peutVoirOnglet, ongletParDefaut, normaliserOnglet, peutSuperviser } from './lib/droits';
 import { MemberReportSubmissionModal } from './components/MemberReportSubmissionModal';
 import { LogoProposalModal } from './components/LogoProposalModal';
 import { EspaceTravailHub } from './components/EspaceTravailHub';
@@ -113,12 +114,15 @@ export default function App() {
   const [executiveMembers, setExecutiveMembers] = useState<ExecutiveMember[]>(INITIAL_EXECUTIVE_MEMBERS);
   const [currentMember, setCurrentMember] = useState<ExecutiveMember>(INITIAL_EXECUTIVE_MEMBERS[0]);
   const [estConnecte, setEstConnecte] = useState<boolean>(false);
+  // Rôle réel du membre connecté (ne change pas quand le CPI consulte l'espace d'un autre membre)
+  const [roleReel, setRoleReel] = useState<string | undefined>(undefined);
   // Session Supabase : au chargement, on retrouve le membre déjà connecté
   useEffect(() => {
     const synchroniser = async () => {
       const fiche = await chargerMaFiche();
       if (fiche && fiche.statut === 'actif') {
         setCurrentMember(membreVersProfil(fiche));
+        setRoleReel(fiche.role);
         setEstConnecte(true);
       }
     };
@@ -129,6 +133,7 @@ export default function App() {
       }
       if (evenement === 'SIGNED_OUT') {
         setEstConnecte(false);
+        setRoleReel(undefined);
       }
     });
     return () => abonnement.subscription.unsubscribe();
@@ -301,7 +306,7 @@ export default function App() {
         `Intervention sur le site de ${action.location}`,
         action.tagId ? `Baguage & identification de la tortue ${action.tagId} (${action.species || 'Chélonien'})` : 'Patrouille et sécurisation de secteur',
         action.measurements?.eggsCount ? `Collecte et mise en écloserie de ${action.measurements.eggsCount} œufs` : 'Contrôle biométrique et mise en bassin d\'observation',
-        `Visa de conformité : ${action.verifiedBy}`
+        ...(action.verifiedBy && action.visaValidatedAt ? [`Visa de conformité : ${action.verifiedBy}`] : [])
       ],
       quantitativeResults: [
         { label: "Tortues / nids traités", value: action.tagId || "1" },
@@ -399,8 +404,16 @@ export default function App() {
     }));
   };
 
+  const ongletAffiche = estConnecte && peutVoirOnglet(roleReel, intranetTab) ? normaliserOnglet(intranetTab) : null;
+
   const handleGoToIntranet = (tab: string = 'dashboard') => {
-    setIntranetTab(tab);
+    // L'intranet n'est ouvert qu'à un membre connecté, et seulement sur les espaces autorisés à son rôle
+    if (!estConnecte) {
+      setIsWorkspaceAuthModalOpen(true);
+      return;
+    }
+    const cible = peutVoirOnglet(roleReel, tab) ? tab : (ongletParDefaut(roleReel) || tab);
+    setIntranetTab(cible);
     setCurrentView('intranet');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -418,10 +431,12 @@ export default function App() {
         onOpenTrainingManual={() => setIsTrainingManualOpen(true)}
         onOpenWorkspaceAuth={() => setIsWorkspaceAuthModalOpen(true)}
         estConnecte={estConnecte}
+        roleCle={roleReel}
         onDeconnexion={async () => {
           handleAddAuditLog(currentMember.name, currentMember.role, 'connexion', 'Fermeture de session');
           await supabase.auth.signOut();
           setEstConnecte(false);
+          setRoleReel(undefined);
           setCurrentMember(INITIAL_EXECUTIVE_MEMBERS[0]);
           setCurrentView('public');
         }}
@@ -447,20 +462,19 @@ export default function App() {
             onExtractThreadToReport={handleExtractThreadToReport}
             impactMetrics={impactMetrics}
             officialDocuments={officialDocs}
-            onGoToWebmastering={() => {
-              setCurrentView('intranet');
-              setIntranetTab('webmastering-docs');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
+            estConnecte={estConnecte}
+            effectifMembres={executiveMembers.length}
+            onGoToWebmastering={() => handleGoToIntranet('webmastering-docs')}
           />
         ) : (
           <main className="max-w-7xl mx-auto px-4 py-8">
-            {(intranetTab === 'espace-travail' || intranetTab === 'dashboard') && (
+            {ongletAffiche === 'espace-travail' && (
               <EspaceTravailHub
                 members={executiveMembers}
                 onUpdateMembers={setExecutiveMembers}
                 activeMember={currentMember}
                 onSetActiveMember={setCurrentMember}
+                peutSuperviser={peutSuperviser(roleReel)}
                 logisticalNeeds={logisticalNeeds}
                 onAddLogisticalNeed={(item) => setLogisticalNeeds(prev => [item, ...prev])}
                 onUpdateLogisticalNeed={(item) => setLogisticalNeeds(prev => prev.map(n => n.id === item.id ? item : n))}
@@ -497,15 +511,15 @@ export default function App() {
               />
             )}
 
-            {intranetTab === 'conseil-administration' && (
+            {ongletAffiche === 'conseil-administration' && (
               <BoardOfDirectorsSection onNavigateTab={(tab) => setIntranetTab(tab)} />
             )}
 
-            {intranetTab === 'cahiers-charges' && (
+            {ongletAffiche === 'cahiers-charges' && (
               <JobDescriptionsView posts={posts} />
             )}
 
-            {intranetTab === 'rapports-mensuels' && (
+            {ongletAffiche === 'rapports-mensuels' && (
               <MonthlyReportsView
                 reports={reports}
                 onAddReport={handleAddReport}
@@ -514,7 +528,7 @@ export default function App() {
               />
             )}
 
-            {intranetTab === 'webmastering-docs' && (
+            {ongletAffiche === 'webmastering-docs' && (
               <WebmasteringDocumentsView
                 documents={officialDocs}
                 onAddDocument={handleAddDocument}
@@ -528,18 +542,18 @@ export default function App() {
               />
             )}
 
-            {intranetTab === 'projets' && (
+            {ongletAffiche === 'projets' && (
               <ProjectsView
                 projects={projects}
                 onToggleMilestone={handleToggleMilestone}
               />
             )}
 
-            {intranetTab === 'ptf' && (
+            {ongletAffiche === 'ptf' && (
               <PartnersView partners={partners} />
             )}
 
-            {intranetTab === 'passerelle' && (
+            {ongletAffiche === 'passerelle' && (
               <GoogleDolibarrBridgeView
                 projects={projects}
                 partners={partners}
@@ -547,7 +561,7 @@ export default function App() {
               />
             )}
 
-            {intranetTab === 'assistant-ia' && (
+            {ongletAffiche === 'assistant-ia' && (
               <CpiAiAssistantView
                 reports={reports}
                 projects={projects}
@@ -556,7 +570,7 @@ export default function App() {
               />
             )}
 
-            {intranetTab === 'parametres-audit' && (
+            {ongletAffiche === 'parametres-audit' && (
               <SiteSettingsAndAuditView
                 currentMember={currentMember}
                 contactSettings={contactSettings}
@@ -566,6 +580,23 @@ export default function App() {
                 onUpdateDelegation={setDelegation}
                 onAddAuditLog={handleAddAuditLog}
               />
+            )}
+
+            {ongletAffiche === null && (
+              <div className="max-w-xl mx-auto bg-white rounded-3xl p-8 border border-rose-200 shadow-sm text-center space-y-3">
+                <h3 className="text-xl font-black text-slate-900">Accès réservé</h3>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  {estConnecte
+                    ? "Votre profil ne donne pas accès à cet espace. Adressez-vous au Chargé de Programmes par Intérim (CPI) ou au Directeur Exécutif pour toute demande d'accès."
+                    : "Connectez-vous avec votre compte membre pour accéder à cet espace."}
+                </p>
+                <button
+                  onClick={() => (estConnecte ? setCurrentView('public') : setIsWorkspaceAuthModalOpen(true))}
+                  className="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-bold cursor-pointer"
+                >
+                  {estConnecte ? 'Retour au site public' : 'Se connecter'}
+                </button>
+              </div>
             )}
           </main>
         )}
@@ -589,9 +620,16 @@ export default function App() {
         onClose={() => setIsWorkspaceAuthModalOpen(false)}
         onLoginSuccess={(member) => {
           setCurrentMember(member);
+          setRoleReel(member.roleCle);
           setEstConnecte(true);
-          setCurrentView('intranet');
-          setIntranetTab('dashboard');
+          const premier = ongletParDefaut(member.roleCle);
+          if (premier) {
+            setCurrentView('intranet');
+            setIntranetTab(premier);
+          } else {
+            // Profil sans espace interne (éco-garde, partenaire, presse…) : retour au site public
+            setCurrentView('public');
+          }
           handleAddAuditLog(member.name, member.role, 'connexion', 'Ouverture de session Espace de Travail réussie');
         }}
       />

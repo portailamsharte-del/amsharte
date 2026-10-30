@@ -36,52 +36,18 @@ describe('App Component - Navigation & Key Components', () => {
     expect(screen.getAllByRole('button', { name: /DE Amsharte/i }).length).toBeGreaterThanOrEqual(1);
   });
 
-  it('switches from Public view to Intranet view when clicking "DE Amsharte"', () => {
+  it('ouvre la fenêtre de connexion (et non l\'intranet) quand un visiteur non connecté clique sur "DE Amsharte"', () => {
     render(<App />);
 
-    // Locate and click the "DE Amsharte" button
     const deButtons = screen.getAllByRole('button', { name: /DE Amsharte/i });
     expect(deButtons.length).toBeGreaterThanOrEqual(1);
     fireEvent.click(deButtons[0]);
 
-    // Verify Intranet Header displays the "Site Public" return button
-    const publicSiteButtons = screen.getAllByRole('button', { name: /Site Public/i });
-    expect(publicSiteButtons.length).toBeGreaterThanOrEqual(1);
+    // La fenêtre de connexion des membres s'affiche
+    expect(screen.getAllByText(/Espace de Travail AMSHARTE/i).length).toBeGreaterThanOrEqual(1);
 
-    // Verify Intranet secondary navigation tabs are displayed
-    expect(screen.getByText(/Espace de travail DE/i)).toBeInTheDocument();
-    expect(screen.getByText(/Espace de travail CA/i)).toBeInTheDocument();
-
-    // Verify the Espace de Travail Hub key components load correctly
-    expect(
-      screen.getByText(/Espace de Travail & Cockpit Opérationnel AMSHARTE/i)
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(/Annuaire des Membres & Pilotage des Cahiers des Charges/i)
-    ).toBeInTheDocument();
-    expect(screen.getByText(/Salle Virtuelle AMSHARTE/i)).toBeInTheDocument();
-  });
-
-  it('switches back from Intranet view to Public view when clicking "Site Public"', () => {
-    render(<App />);
-
-    // 1. Go to Intranet
-    const deButtons = screen.getAllByRole('button', { name: /DE Amsharte/i });
-    fireEvent.click(deButtons[0]);
-
-    expect(
-      screen.getByText(/Espace de Travail & Cockpit Opérationnel AMSHARTE/i)
-    ).toBeInTheDocument();
-
-    // 2. Click "Site Public" to return
-    const publicSiteButtons = screen.getAllByRole('button', { name: /Site Public/i });
-    expect(publicSiteButtons.length).toBeGreaterThanOrEqual(1);
-    fireEvent.click(publicSiteButtons[0]);
-
-    // 3. Verify public view is restored and intranet hub is unmounted
-    expect(
-      screen.getAllByText(/Tortues Marines de Togbin Plage/i).length
-    ).toBeGreaterThanOrEqual(1);
+    // L'espace de travail interne reste fermé : pas de bouton « Site Public », pas d'annuaire
+    expect(screen.queryByRole('button', { name: /Site Public/i })).not.toBeInTheDocument();
     expect(
       screen.queryByText(/Annuaire des Membres & Pilotage des Cahiers des Charges/i)
     ).not.toBeInTheDocument();

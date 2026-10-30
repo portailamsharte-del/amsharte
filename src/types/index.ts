@@ -151,7 +151,8 @@ export interface FieldActionPost {
   animatedType?: 'corridor_carte' | 'eclosion_simulation' | 'demallage_tutoriel';
   isExampleMedia?: boolean;
   examplePlaceholderLabel?: string;
-  verifiedBy: string; // e.g. "Police BPLP & CPI"
+  verifiedBy?: string; // qui a réellement validé (ex. "Police BPLP & CPI") — vide tant qu'aucune validation n'a eu lieu
+  visaValidatedAt?: string; // date réelle de la validation (AAAA-MM-JJ) ; sans elle, aucun visa n'est affiché
   extractedIntoReport?: boolean;
   likes: number;
   stakeholderCommentsCount: number;
@@ -364,6 +365,7 @@ export interface ExecutiveMember {
   id: string;
   name: string;
   role: string;
+  roleCle?: string; // clé de droit : cpi, de, pca, ca, finances, site_web, communication, charge, secretaire, point_focal_presse, eco_garde…
   department: string;
   photo: string;
   accessCode: string;

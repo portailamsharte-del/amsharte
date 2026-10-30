@@ -46,7 +46,7 @@ describe('EspaceTravailHub - Cockpit Opérationnel & Gestion des 33 Membres', ()
     ).toBeInTheDocument();
 
     // Internal sub-tabs
-    expect(screen.getByRole('button', { name: /Annuaire \(33 Membres\)/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Annuaire \(15 Membres\)/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Cahiers de Charges & Rôles/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Mon Espace & Dépôt Rapport/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Cockpit CPI\/DE & Tableau de Bord/i })).toBeInTheDocument();
@@ -70,7 +70,7 @@ describe('EspaceTravailHub - Cockpit Opérationnel & Gestion des 33 Membres', ()
     ).toBeGreaterThanOrEqual(1);
 
     expect(
-      screen.getAllByText(/Christian KOUDJRO/i).length
+      screen.getAllByText(/Christian SESSOU/i).length
     ).toBeGreaterThanOrEqual(1);
   });
 

@@ -21,7 +21,7 @@ describe('Governance & Board of Directors (Conseil d\'Administration)', () => {
 
     // 3. Verify sub-tabs presence
     expect(screen.getByRole('button', { name: /La Présidence & Composition du CA/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Pyramide des Pouvoirs \(CA \/ DE \/ CPI\)/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Organigramme \(CA \/ DE \/ CPI \/ chargés\)/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Règles Loi N° 2025-19 & Contrôle/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Délibérations & PV Officiels/i })).toBeInTheDocument();
   });
@@ -37,12 +37,12 @@ describe('Governance & Board of Directors (Conseil d\'Administration)', () => {
       screen.getByText(/Enregistrement Biométrique des Administrateurs/i)
     ).toBeInTheDocument();
 
-    // Click on "Pyramide des Pouvoirs (CA / DE / CPI)" tab
-    const pyramideTab = screen.getByRole('button', { name: /Pyramide des Pouvoirs \(CA \/ DE \/ CPI\)/i });
+    // Click on "Organigramme (CA / DE / CPI / chargés)" tab
+    const pyramideTab = screen.getByRole('button', { name: /Organigramme \(CA \/ DE \/ CPI \/ chargés\)/i });
     fireEvent.click(pyramideTab);
 
     expect(
-      screen.getByText(/Coordination Opérationnelle & Suivi Scientifique/i)
+      screen.getByText(/Équipe rattachée au Directeur Exécutif/i)
     ).toBeInTheDocument();
   });
 

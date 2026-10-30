@@ -10,6 +10,7 @@ import {
 import { getReportingDeadlinesInfo } from '../utils/helpers';
 import { ExecutiveMember } from '../types';
 import { AuthenticLogo } from './AuthenticLogo';
+import { peutVoirOnglet } from '../lib/droits';
 import { PWAInstallButton } from './PWAInstallButton';
 
 interface HeaderProps {
@@ -27,6 +28,7 @@ interface HeaderProps {
   onOpenNotifications?: () => void;
   unreadNotificationsCount?: number;
   estConnecte?: boolean;
+  roleCle?: string;
   onDeconnexion?: () => void;
 }
 
@@ -40,6 +42,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenNotifications,
   unreadNotificationsCount = 0,
   estConnecte = false,
+  roleCle,
   onDeconnexion
 }) => {
   const deadlines = getReportingDeadlinesInfo();
@@ -149,14 +152,14 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs">
             <div className="flex items-center gap-1 overflow-x-auto py-0.5">
               {[
-                { id: 'espace-travail', label: 'Espace de travail DE', icon: '👥' },
-                { id: 'conseil-administration', label: 'Espace de travail CA', icon: '🏛️' },
+                { id: 'espace-travail', label: 'Espace Direction Exécutive', icon: '👥' },
+                { id: 'conseil-administration', label: 'Espace Conseil d\'Administration', icon: '🏛️' },
                 { id: 'projets', label: 'Projets (Tortues & Mangroves)', icon: '🌱' },
                 { id: 'ptf', label: 'Partenaires PTF & Financement', icon: '🤝' },
                 { id: 'passerelle', label: 'Google ↔ Dolibarr', icon: '⚡' },
                 { id: 'assistant-ia', label: 'Assistant IA (CPI)', icon: '🤖' },
                 { id: 'parametres-audit', label: 'Audit & Paramètres', icon: '⚙️' },
-              ].map((tab) => (
+              ].filter((tab) => peutVoirOnglet(roleCle, tab.id)).map((tab) => (
                 <button
                   key={tab.id}
                   id={`tab-btn-${tab.id}`}
