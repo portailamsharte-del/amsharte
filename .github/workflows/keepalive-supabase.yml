@@ -1,0 +1,19 @@
+name: Garder Supabase actif (AMSHARTE)
+
+on:
+  schedule:
+    # Lundi et jeudi a 07h00 UTC : deux appels par semaine suffisent largement
+    # a rester sous le delai de pause automatique de Supabase (projet gratuit
+    # mis en pause au-dela d'une semaine sans aucun appel).
+    - cron: '0 7 * * 1,4'
+  workflow_dispatch:
+
+jobs:
+  ping-supabase:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Appel de reveil (lecture seule, cle publique uniquement)
+        run: |
+          curl -sS -o /dev/null -w "Statut HTTP : %{http_code}\n" \
+            "https://iqgtvrgwovdfqhpmagxo.supabase.co/rest/v1/" \
+            -H "apikey: sb_publishable_eDcnqXCS7vWZPfDMmMEcVA_k-M35wtK"
