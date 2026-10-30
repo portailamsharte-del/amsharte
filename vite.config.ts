@@ -6,9 +6,9 @@ import path from 'path';
 import { defineConfig } from 'vite';
 
 // Sur GitHub Pages, le chemin doit correspondre EXACTEMENT au nom du dépôt cible
-// (ex. /Amsharte/ pour houesseia/Amsharte). Réglable par variable d'environnement
-// pour ne jamais se tromper de compte/dépôt et éviter un site blanc.
-const BASE = process.env.GITHUB_PAGES === 'true' ? (process.env.BASE_PATH || '/Amsharte/') : '/';
+// (ex. /portailamsharte/ pour portailamsharte-del/portailamsharte). Réglable par
+// variable d'environnement pour ne jamais se tromper de compte/dépôt et éviter un site blanc.
+const BASE = process.env.GITHUB_PAGES === 'true' ? (process.env.BASE_PATH || '/portailamsharte/') : '/';
 
 export default defineConfig(() => {
   return {
